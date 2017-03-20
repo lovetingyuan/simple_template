@@ -10,7 +10,7 @@ example: [todo_list](https://lovetingyuan.github.io/simple_template/)
 * 模板变量 {{ var(expression) content }}
 * 局部作用域 {{ with(expression) content }}
 * 忽略编译输出 {{ ! content }}
-* 事件绑定 {{ <div onclick="{{@handler}}"></div> }}
+* 事件绑定 {{ &lt;div onclick="{{@handler}}"&gt;&lt;/div&gt; }}
 * 自定义方法 {{ foo(arg1, arg2, ...) }}
 
 todo:
