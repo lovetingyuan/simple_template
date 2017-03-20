@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>TODO_LIST</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--[if lt IE 8]>
+    <script>
+      setTimeout(function() {
+        document.write('抱歉您的浏览器版本过低，请升级或更换为非IE浏览器')
+      })
+    </script>
+  <![endif]-->
+  <script>
+  var polyfills = {
+    'Function.prototype.bind': Function.prototype.bind,
+    'Array.prototype.forEach': Array.prototype.forEach,
+    'Array.prototype.map': Array.prototype.map,
+    'String.prototype.trim': String.prototype.trim,
+    'Object.assign': Object.assign,
+    'Object.keys': Object.keys
+  }
+  </script>
+  <script>
+  (function() {
+    if(typeof polyfills !== 'object') return
+    var featuresList = [], polyfillUrl
+    for (var key in polyfills) {
+      if (!polyfills[key]) {
+        featuresList.push(key)
+      }
+    }
+    if(featuresList.length) {
+      polyfillUrl = 'https://cdn.polyfill.io/v2/polyfill.min.js?features=' +
+        featuresList.join() + '&flags=gated'
+      document.write('<script src="' + polyfillUrl + '"><\/script>')
+    }
+  })()
+  </script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script type="text/template" id="htmlstr">
+    <div>
+      {{ var(_title) {{ with(title)
+      <h3>{{mainTitle}}</h3>
+      <h5>{{subTitle}}</h5> }}
+      <hr> }} {{#_title }}
+      <input type="text" ref="itemInput" onkeydown="{{@onEnter}}" />
+      <input type="button" value="添加" onclick="{{@onAddItem}}" />
+      <span>共{{ itemList.length }}项</span> {{ if(!itemList.length)
+      <p>请添加事项</p> }} {{ if(itemList.length)
+      <ul>
+        {{ for(itemList)
+        <li {{ if(!($index % 2)) style="background-color: #eee;" }}>
+          <span>事项{{$index + 1}}: {{$value.text}}
+                ({{ parseDate($value.time)}})
+              </span>
+          <em style="float: right;" onclick="{{@onDeleteItem}}">×</em>
+        </li>
+        }}
+      </ul>
+      }} {{ # foot }}
+    </div>
+  </script>
+  <script src="template.js"></script>
+  <script>
+  (function init() {
+    var templateStr = document.getElementById('htmlstr').innerHTML
+    render(document.getElementById('container'), templateStr, {
+      onAddItem: function() {
+        var item = this.refs('itemInput').value.trim()
+        if (!item) return
+        this.itemList.push({
+           text: item,
+          time: Date.now()
+        })
+        this.render(function(dom) {
+          localStorage.setItem('todo', JSON.stringify(this.itemList))
+          this.refs('itemInput').focus()
+        })
+      },
+      onDeleteItem: function() {
+        this.itemList.splice(this.$index, 1)
+        this.render(function() {
+          localStorage.setItem('todo', JSON.stringify(this.itemList))
+        })
+      },
+      onEnter: function(e) {
+        if (e.keyCode === 13) {
+          this.onAddItem()
+        }
+      },
+      itemList: JSON.parse(localStorage.getItem('todo')) || [],
+      title: {
+        mainTitle: 'todo list',
+        subTitle: 'just do it'
+      },
+      yourName: 'no parse'
+    }, {
+      funcs: {
+        parseDate: function(time) {
+          var date = new Date(time)
+          return date.getMonth() + 1 + '月' + date.getDate() + '日'
+        }
+      },
+      partials: {
+        foot: '<footer>© {{new Date().getFullYear() }} tingyuan</footer>'
+      }
+    })
+  })()
+  </script>
+</body>
+
+</html>
