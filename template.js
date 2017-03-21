@@ -200,7 +200,7 @@
     var newDataList = []
     var callbacks = []
     data.render = function(newData, callback) {
-      if(newData && typeof newData === 'Object') {
+      if(newData && typeof newData === 'object') {
         newDataList.push(newData)
         if(typeof callback === 'function') {
           callbacks.push(callback)
