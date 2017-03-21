@@ -1,7 +1,7 @@
 # simple_template
 简单的模板编译
 
-example: [todo_list](https://lovetingyuan.github.io/simple_template/)
+example: [jsfiddle: todo_list](https://jsfiddle.net/tingyuan/ffgmn1hy/)
 
 支持：
 * 双花括号表达式绑定 {{ expression }}
